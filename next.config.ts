@@ -1,7 +1,14 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  experimental: {
+    turbo: {
+      resolveAlias: {
+        './document.js': './components/reader/document.tsx',
+        canvas: "./empty-module.ts",
+      },
+    },
+  },
 };
 
 export default nextConfig;
