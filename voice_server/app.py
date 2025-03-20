@@ -2,7 +2,7 @@ import os
 from fastapi import FastAPI
 import requests
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from models import StreamAudioRequest
 
 web_app = FastAPI()
 
@@ -23,13 +23,27 @@ headers = {
     'X-USER-ID': user_id
 }
 
-def generate_audio(text: str, model="Play3.0-mini", voice="s3://voice-cloning-zero-shot/baf1ef41-36b6-428c-9bdf-50ba54682bd8/original/manifest.json", outputFormat="mp3"):
+def generate_audio(text: str, model_options=None):
+    if model_options is None:
+        model_options = {}
+    
+    model = model_options.get('model', 'Play3.0-mini')
+    voice = model_options.get('voice', {}).get('value', 's3://voice-cloning-zero-shot/baf1ef41-36b6-428c-9bdf-50ba54682bd8/original/manifest.json')
+    speed = model_options.get('speed', 1)
+    outputFormat = "mp3"
+
     json_data = {
         'model': model,
         'text': text,
         'voice': voice,
-        'outputFormat': outputFormat
+        'outputFormat': outputFormat,
+        'speed': speed
     }
+    
+    if 'temperature' in model_options:
+        json_data['temperature'] = float(model_options['temperature'])
+    
+    print(f"Generating audio with options: {json_data}")
     
     response = requests.post('https://api.play.ai/api/v1/tts/stream', headers=headers, json=json_data, stream=True)
 
@@ -38,17 +52,21 @@ def generate_audio(text: str, model="Play3.0-mini", voice="s3://voice-cloning-ze
             if chunk:
                 yield chunk
     else:
-        raise Exception(f"Request failed with status code {response.status_code}: {response.text}")
+        error_message = f"Request failed with status code {response.status_code}: {response.text}"
+        print(error_message)
+        raise Exception(error_message)
 
-class StreamAudioRequest(BaseModel):
-    text: str
 
 @web_app.post("/stream_audio")
-def stream_audio(request: StreamAudioRequest):
+async def stream_audio(request: StreamAudioRequest):
     from fastapi.responses import StreamingResponse
+    
+    model_options = request.modelOptions.dict() if request.modelOptions else {}
+    print(f"Using model options: {model_options}")
 
     return StreamingResponse(
-        generate_audio(request.text), media_type="audio/mpeg"
+        generate_audio(request.text, model_options), 
+        media_type="audio/mpeg"
     )
 
 if __name__ == "__main__":

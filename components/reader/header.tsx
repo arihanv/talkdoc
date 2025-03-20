@@ -4,6 +4,7 @@ import React from "react";
 import { useAtom } from "jotai";
 import { fileNameAtom } from "@/lib/store";
 import FileUploadModal from "../modals/file-upload";
+import SettingsModal from "../modals/settings";
 
 export default function DocumentHeader() {
 	const [fileName] = useAtom(fileNameAtom);
@@ -14,6 +15,7 @@ export default function DocumentHeader() {
 
 			<div className="flex items-center gap-2">
 				<FileUploadModal />
+				<SettingsModal />
 			</div>
 		</div>
 	);

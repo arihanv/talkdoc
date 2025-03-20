@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from "react";
+import type { AudioModelSettings } from "@/lib/store";
 
-export function useAudioPlayer(text: string) {
+export function useAudioPlayer(text: string, modelOptions: AudioModelSettings) {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isPaused, setIsPaused] = useState<boolean>(false);
   const [isGenerated, setIsGenerated] = useState<boolean>(false);
@@ -109,7 +110,10 @@ export function useAudioPlayer(text: string) {
       const response = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text }),
+        body: JSON.stringify({ 
+          text, 
+          modelOptions
+        }),
       });
 
       if (!response.body) {
