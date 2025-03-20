@@ -173,7 +173,7 @@ export default function DocumentPage() {
 					}}
 					disabled={pageNumber <= 1}
 				>
-					<ChevronLeft className="mr-2 h-4 w-4" /> Previous
+					<ChevronLeft className="lg:mr-2 h-4 w-4" /> <span className="hidden lg:block">Previous</span>
 				</Button>
 
 				<div className="flex gap-2 h-14 items-center">
@@ -214,7 +214,7 @@ export default function DocumentPage() {
 										}
 									}}
 									disabled={!isGenerated}
-									className="bg-blue-600 hover:bg-blue-700 text-white h-8 w-8 p-0 rounded-full"
+									className="bg-blue-600 cursor-pointer hover:bg-blue-700 text-white h-8 w-8 p-0 rounded-full"
 								>
 									{isPaused || !isPlaying ? (
 										<LucidePlay className="h-4 w-4" />
@@ -252,7 +252,7 @@ export default function DocumentPage() {
 					}}
 					disabled={pageNumber >= (numPages || 1)}
 				>
-					Next <ChevronRight className="ml-2 h-4 w-4" />
+					<span className="hidden lg:block">Next</span> <ChevronRight className="lg:ml-2 h-4 w-4" />
 				</Button>
 			</div>
 		</div>
