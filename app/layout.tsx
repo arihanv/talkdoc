@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "TalkDoc",
-  description: "Read PDF files with fastnAI-powered audio",
+  description: "Read PDF files with fast AI-powered audio",
 };
 
 export default function RootLayout({
