@@ -17,9 +17,10 @@ import {
 	ZoomIn,
 	ZoomOut,
 	Maximize,
+	LucideVolume2,
 } from "lucide-react";
-import { useAtom } from "jotai";
-import { fileUrlAtom } from "@/lib/store";
+import { useAtom, useAtomValue } from "jotai";
+import { fileUrlAtom, audioModelSettingsAtom } from "@/lib/store";
 
 interface PDFTextItem {
 	str: string;
@@ -38,6 +39,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 export default function DocumentPage() {
 	const [fileUrl] = useAtom(fileUrlAtom);
 	const [numPages, setNumPages] = useState<number>();
+	const audioModelSettings = useAtomValue(audioModelSettingsAtom);
 	const [pageNumber, setPageNumber] = useState<number>(1);
 	const [pageContent, setPageContent] = useState<string>("");
 	const [scale, setScale] = useState<number>(1.0);
@@ -54,7 +56,7 @@ export default function DocumentPage() {
 		play,
 		pause,
 		reset,
-	} = useAudioPlayer(pageContent);
+	} = useAudioPlayer(pageContent, audioModelSettings);
 
 	// Reset audio state when reset function changes or file changes
 	useEffect(() => {
@@ -179,9 +181,9 @@ export default function DocumentPage() {
 						<Button
 							onClick={play}
 							disabled={isPlaying || pageContent.length === 0}
-							className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+							className="hover:scale-105 hover:bg-blue-500 cursor-pointer hover:opacity-80 items-center justify-between gap-1 rounded-md border border-blue-500 bg-gradient-to-t to-blue-700/70 from-[#2563eb] py-2 px-3 text-sm font-medium text-white shadow transition duration-150 ease-in-out"
 						>
-							Generate Audio
+							Generate Audio <LucideVolume2 className="ml-1 h-4 w-4" />
 						</Button>
 					) : (
 						<div className="flex flex-col gap-2 items-center bg-gray-50 p-2 rounded-md border border-gray-200 min-w-[220px] relative">
